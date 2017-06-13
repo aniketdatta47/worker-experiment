@@ -1,26 +1,48 @@
-// import Foo from '../src/foo.js';
 import _ from 'lodash';
-import Foo from '../src/foo.js';
+var MyWorker = require("worker-loader!../src/worker.js");
+console.log(MyWorker);
 
 
-// console.info(Foo.getText());
 function component () {
   var element = document.createElement('div');
 
   // Lodash, currently included via a script, is required for this line to work
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  element.innerHTML = _.join(['Hello', 'webpack', 'All good to go now...'], ' ');
 
   return element;
 }
 
-function componentZ () {
-  var element = document.createElement('div');
+function inputComponent() {
+  var el = document.createElement('input');
+  el.id = 'one';
+  el.type = 'text';
 
-  // Lodash, currently included via a script, is required for this line to work
-  element.innerHTML = Foo.getText();
+  return el;
+}
 
-  return element;
+function mountWorker () {
+  var input = document.querySelector('#one');
+  var worker = new MyWorker();
+  var workerRes = document.querySelector('#worker');
+
+  input.onchange = function() {
+    worker.postMessage({'val': input.value }); // Sending message as an array to the worker
+	  console.log('Message posted to worker');
+  }
+
+  worker.onmessage = function(event) {
+    console.log(event.data);
+    console.log('on-message....');
+  };
+
+  worker.addEventListener("message", function(event) {
+    debugger;
+    workerRes.textContent = event.data;
+    console.info('Message received from worker');
+  });
+
 }
 
 document.body.appendChild(component());
-document.body.appendChild(componentZ());
+document.body.appendChild(inputComponent());
+mountWorker();

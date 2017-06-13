@@ -7,18 +7,16 @@ var webpackDevMiddleware = require("webpack-dev-middleware");
 var webpack = require("webpack");
 var webpackConfig = require("./webpack.config");
 
-
-
 const app = express();
 var compiler = webpack(webpackConfig);
 
-
 app.use(webpackDevMiddleware(compiler, {
   publicPath: "/dist",
-	filename: "bundle.js" // Same as `output.publicPath` in most cases.
+	filename: "bundle.js",
+	https: true
 }));
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
 
