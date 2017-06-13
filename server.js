@@ -3,11 +3,23 @@ const spdy = require('spdy');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+var webpackDevMiddleware = require("webpack-dev-middleware");
+var webpack = require("webpack");
+var webpackConfig = require("./webpack.config");
+
+
 
 const app = express();
+var compiler = webpack(webpackConfig);
+
+
+app.use(webpackDevMiddleware(compiler, {
+  publicPath: "/dist",
+	filename: "bundle.js" // Same as `output.publicPath` in most cases.
+}));
 
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/dist/index.html');
 });
 
 const options = {
