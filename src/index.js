@@ -1,7 +1,6 @@
 import _ from 'lodash';
-var MyWorker = require("worker-loader!../src/worker.js");
-console.log(MyWorker);
 
+var Worker = require("worker-loader!./cworker.js");
 
 function component () {
   var element = document.createElement('div');
@@ -22,8 +21,8 @@ function inputComponent() {
 
 function mountWorker () {
   var input = document.querySelector('#one');
-  var worker = new MyWorker();
   var workerRes = document.querySelector('#worker');
+  var worker = new Worker();
 
   input.onchange = function() {
     worker.postMessage({'val': input.value }); // Sending message as an array to the worker

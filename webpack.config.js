@@ -1,14 +1,23 @@
 var path = require('path');
 var FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
-
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    app: './src/index.js'
+  },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve('./dist')
   },
   plugins: [
-    new FriendlyErrorsWebpackPlugin(),
+    new FriendlyErrorsWebpackPlugin()
   ],
+  module: {
+    rules: [
+      {
+        test: /\worker.js$/,
+        use: 'worker-loader'
+      }
+    ]
+  }
 };
