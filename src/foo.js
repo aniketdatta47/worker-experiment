@@ -11,4 +11,4 @@ class Foo {
   }
 }
 
-module.exports = Foo;
+module.exports = new Foo();
