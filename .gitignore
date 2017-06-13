@@ -1,1 +1,4 @@
 node_modules*
+proxy/server.csr
+proxy/server.crt
+proxy/server.key
