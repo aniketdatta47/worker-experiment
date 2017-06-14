@@ -5,6 +5,14 @@ var result = document.querySelector('.result');
 
 var workers = [];
 
+const FPS = [(1/30) * 1000, (1/60) * 1000, (1/45) * 1000];
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 function stopworkers() {
   if (!workers.length) {
     console.log('No workers :(');
@@ -18,7 +26,7 @@ function stopworkers() {
 }
 
 function handleWorkerMessage(e) {
-  document.getElementById('result').innerText += "\n Currently running -> " + e.data.step;
+  document.getElementById('#' + e.data.workerID).innerText = "\n Currently running -> " + e.data.step + " at rate " + e.data.rate;
 }
 
 start.onclick = function() {
@@ -28,15 +36,24 @@ start.onclick = function() {
   }
 
   // spawn a worker
-  var workers  = window.workers;
-  var myWorker = new Worker("../workers/custom-worker.js");
+  var workers    = window.workers;
+  var myWorker   = new Worker("../workers/custom-worker.js");
+  var myWorkerID = Date.now();
 
   myWorker.onmessage = function(e) {
     handleWorkerMessage(e);
   };
 
-  window.workers.push(myWorker);
-  myWorker.postMessage({ msg: 'START' });
+  window.workers.push({
+    worker: myWorker,
+    workerID: myWorkerID
+  });
+
+  var div = document.createElement('div');
+  div.id = myWorkerID;
+  document.querySelector('#result').appendChild(div);
+
+  myWorker.postMessage({ msg: 'START', workerID: myWorkerID, rate: FPS[getRandomInt(0,2)] });
 };
 
 stop.onclick = function() {
