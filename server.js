@@ -3,22 +3,21 @@ const spdy = require('spdy');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-var webpackDevMiddleware = require("webpack-dev-middleware");
-var webpack = require("webpack");
-var webpackConfig = require("./webpack.config");
-
 const app = express();
-var compiler = webpack(webpackConfig);
 
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: "/dist",
-	filename: "bundle.js",
-	https: true
-}));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/dist/index.html');
+  res.sendFile(__dirname + '/src/index.html');
 });
+
+app.get('/src/main.js', (req, res) => {
+  res.sendFile(__dirname + '/src/main.js');
+});
+
+app.get('/workers/custom-worker.js', (req, res) => {
+  res.sendFile(__dirname + '/workers/custom-worker.js');
+});
+
 
 const options = {
   key: fs.readFileSync(__dirname + '/proxy/server.key'),
