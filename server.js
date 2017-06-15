@@ -8,6 +8,8 @@ const app = express();
 var mainjs = fs.readFileSync(__dirname + '/src/main.js');
 var workerjs = fs.readFileSync(__dirname + '/workers/custom-worker.js');
 var indexfile = fs.readFileSync(__dirname + '/src/index.html');
+var swjs = fs.readFileSync(__dirname + '/src/sw.js');
+
 
 const options = {
   key: fs.readFileSync(__dirname + '/proxy/server.key'),
@@ -26,6 +28,14 @@ spdy
         return;
       }
       stream.end(mainjs);
+    });
+
+    res.push('/sw.js', headers, function(err, stream) {
+      if (err) {
+        console.log('Sw errror streammmm');
+        return;
+      }
+      stream.end(swjs);
     });
 
     switch(req.url) {
