@@ -5,19 +5,9 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/src/index.html');
-});
-
-app.get('/src/main.js', (req, res) => {
-  res.sendFile(__dirname + '/src/main.js');
-});
-
-app.get('/workers/custom-worker.js', (req, res) => {
-  res.sendFile(__dirname + '/workers/custom-worker.js');
-});
-
+var mainjs = fs.readFileSync(__dirname + '/src/main.js');
+var workerjs = fs.readFileSync(__dirname + '/workers/custom-worker.js');
+var indexfile = fs.readFileSync(__dirname + '/src/index.html');
 
 const options = {
   key: fs.readFileSync(__dirname + '/proxy/server.key'),
@@ -25,7 +15,32 @@ const options = {
 };
 
 spdy
-  .createServer(options, app)
+  .createServer(options, function(req, res){
+    var headers = {
+      'content-type': 'application/javascript'
+    };
+
+    res.push('/main.js', headers, function(err, stream) {
+      if (err) {
+        console.log('Main errror streammmm');
+        return;
+      }
+      stream.end(mainjs);
+    });
+
+    switch(req.url) {
+      case '/':
+        res.writeHead(200, {'content-type': 'text/html'});
+        res.end(indexfile);
+        break;
+      case '/custom-worker.js':
+        res.writeHead(200, headers);
+        res.end(workerjs);
+        break;
+      default:
+        res.writeHead(404);
+    }
+  })
   .listen(port, (error) => {
     if (error) {
       console.error(error)

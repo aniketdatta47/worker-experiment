@@ -44,7 +44,7 @@ start.onclick = function() {
 
   // spawn a worker
   var workers    = window.workers;
-  var myWorker   = new Worker("../workers/custom-worker.js");
+  var myWorker   = new Worker("/custom-worker.js");
   var myWorkerID = Date.now();
 
   myWorker.onmessage = function(e) {
