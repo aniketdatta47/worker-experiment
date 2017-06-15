@@ -3,3 +3,4 @@ proxy*
 proxy/server.csr
 proxy/server.crt
 proxy/server.key
+npm-debug.log
