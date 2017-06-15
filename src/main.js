@@ -26,7 +26,14 @@ function stopworkers() {
 }
 
 function handleWorkerMessage(e) {
-  document.getElementById('#' + e.data.workerID).innerText = "\n Currently running -> " + e.data.step + " at rate " + e.data.rate;
+  var elToUpdate = document.getElementById(e.data.workerID);
+
+  if (!elToUpdate) {
+    console.log('Damn.');
+    return;
+  }
+
+  elToUpdate.innerText = "\n" + `Running ${e.data.workerID}: ${e.data.step} at rate ${e.data.rate}`;
 }
 
 start.onclick = function() {
@@ -51,9 +58,9 @@ start.onclick = function() {
 
   var div = document.createElement('div');
   div.id = myWorkerID;
-  document.querySelector('#result').appendChild(div);
+  document.getElementById('result').appendChild(div);
 
-  myWorker.postMessage({ msg: 'START', workerID: myWorkerID, rate: FPS[getRandomInt(0,2)] });
+  myWorker.postMessage({ msg: 'START', workerID: myWorkerID, rate: FPS[getRandomInt(0,3)] });
 };
 
 stop.onclick = function() {
@@ -65,6 +72,6 @@ stop.onclick = function() {
   var workers = window.workers;
 
   for (var i=0; i < workers.length; i++) {
-    workers[i].terminate();
+    workers[i].worker.terminate();
   }
 };

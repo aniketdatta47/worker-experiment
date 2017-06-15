@@ -1,7 +1,7 @@
 var intervalID = null;
 var currentStep;
 // 30 fps
-var rate = (1/30) * 1000;
+var rate;
 var workerID = 0;
 
 onmessage = function(e) {
@@ -24,10 +24,6 @@ function startSteps(rate, workerID) {
   currentStep = 0;
   intervalID = setInterval(function() {
       currentStep++;
-
-      if (currentStep % 1000 === 1) {
-        postMessage({'step': currentStep, 'type': 1000 });
-      }
 
       postMessage({'step': currentStep, 'rate': rate, 'workerID': thisWorkerID});
   }, rate);
