@@ -1,11 +1,14 @@
-
-var start  = document.querySelector('#start');
-var stop   = document.querySelector('#stop');
+var start = document.querySelector('#start');
+var stop = document.querySelector('#stop');
 var result = document.querySelector('.result');
 
 var workers = [];
 
-const FPS = [(1/30) * 1000, (1/60) * 1000, (1/45) * 1000];
+const FPS = [
+  (1 / 30) * 1000,
+  (1 / 60) * 1000,
+  (1 / 45) * 1000
+];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -19,7 +22,7 @@ function stopworkers() {
     return;
   }
 
-  for (var i=0; i<workers.length; i++) {
+  for (var i = 0; i < workers.length; i++) {
     workers[i].terminate();
     console.log('Worker - ' + i + ' terminated');
   }
@@ -43,24 +46,25 @@ start.onclick = function() {
   }
 
   // spawn a worker
-  var workers    = window.workers;
-  var myWorker   = new Worker("/custom-worker.js");
+  var workers = window.workers;
+  var myWorker = new Worker("/custom-worker.js");
   var myWorkerID = Date.now();
 
   myWorker.onmessage = function(e) {
     handleWorkerMessage(e);
   };
 
-  window.workers.push({
-    worker: myWorker,
-    workerID: myWorkerID
-  });
+  window.workers.push({worker: myWorker, workerID: myWorkerID});
 
   var div = document.createElement('div');
   div.id = myWorkerID;
   document.getElementById('result').appendChild(div);
 
-  myWorker.postMessage({ msg: 'START', workerID: myWorkerID, rate: FPS[getRandomInt(0,3)] });
+  myWorker.postMessage({
+    msg: 'START',
+    workerID: myWorkerID,
+    rate: FPS[getRandomInt(0, 3)]
+  });
 };
 
 stop.onclick = function() {
@@ -71,7 +75,7 @@ stop.onclick = function() {
 
   var workers = window.workers;
 
-  for (var i=0; i < workers.length; i++) {
+  for (var i = 0; i < workers.length; i++) {
     workers[i].worker.terminate();
   }
 };
