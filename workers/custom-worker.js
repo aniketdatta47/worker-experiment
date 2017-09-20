@@ -9,22 +9,54 @@ onmessage = function(e) {
   console.log('Message received --- ' + e.data.msg);
   console.log('Rate --- ' + e.data.rate);
   console.log('workerID --- ' + e.data.workerID);
-  workerID = e.data.workerID;
 
-  startSteps(e.data.rate, workerID);
+  Worker.init(e.data.rate, e.data.workerID);
 }
 
-function startSteps(rate, workerID) {
-  rate = rate;
 
-  var thisWorkerID = workerID;
+class Worker {
+  constructor() {
+    this.intervalID = null;
+    this.currentStep = 0;
+    this.rate = 1000;
+    this.workerId = 0;
+    this.currentStep = 0;
+  }
 
-  console.log('Starting steps at ' + rate + ' ms');
+  set workerId(id) {
+    this.workerId = id;
+  }
 
-  currentStep = 0;
-  intervalID = setInterval(function() {
-      currentStep++;
+  set rate(rate) {
+    this.rate = rate;
+    this.currentStep = 0;
+  }
 
-      postMessage({'step': currentStep, 'rate': rate, 'workerID': thisWorkerID});
-  }, rate);
+  get rate() {
+    return this.rate;
+  }
+
+  get workerId() {
+    return this.workerId;
+  }
+
+  _initialiseWorker() {
+    if (this.intervalID !== null) {
+      console.error("cannot init a worker that has been INITED!!!");
+      return;
+    }
+
+    this.intervalID = setInterval(function() {
+        this.currentStep++;
+
+        postMessage({ 'step': this.currentStep, 'rate': this.rate, 'workerID': this.workerId });
+    }, this.rate);
+  }
+
+  init(rate, id) {
+    debugger;
+    this.workerId = id;
+    this.rate = rate;
+    this._initialiseWorker();
+  }
 }
