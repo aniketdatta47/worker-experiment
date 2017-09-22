@@ -5,16 +5,8 @@ var result = document.querySelector('.result');
 var workers = [];
 
 const FPS = [
-  (1 / 30) * 1000,
-  (1 / 60) * 1000,
-  (1 / 45) * 1000
+  (1 / 17) * 1000
 ];
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 
 function stopworkers() {
   if (!workers.length) {
@@ -47,7 +39,7 @@ start.onclick = function() {
 
   // spawn a worker
   var workers = window.workers;
-  var myWorker = new Worker("/custom-worker.js");
+  var myWorker = new Worker("../workers/init.js");
   var myWorkerID = Date.now();
 
   myWorker.onmessage = function(e) {
@@ -63,7 +55,7 @@ start.onclick = function() {
   myWorker.postMessage({
     msg: 'START',
     workerID: myWorkerID,
-    rate: FPS[getRandomInt(0, 3)]
+    rate: FPS[0]
   });
 };
 

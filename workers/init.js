@@ -1,4 +1,5 @@
 import Worker from './worker';
+import WorkerHandler from './WorkerHandler'
 
 var intervalID = null;
 var currentStep;
@@ -6,12 +7,8 @@ var currentStep;
 var rate;
 var workerID = 0;
 
-    this.id = setInterval(function() {
-        this.currentStep++;
 
-        postMessage({ 'step': this.currentStep, 'rate': this.rate, 'workerID': this.workerId });
-    }, this.rate);
-onmessage = function(e) {
+self.onmessage = function(e) {
   // msg: 'START', workerID: myWorkerID, rate: FPS[getRandomInt(0,2)] }
   console.log('Message received --- ' + e.data.msg);
   console.log('Rate --- ' + e.data.rate);
@@ -20,4 +17,8 @@ onmessage = function(e) {
   if (e.msg === "START") {
     new Worker(e.data.workerID, e.data.rate);
   }
+}
+
+self.onerror = function(e) {
+
 }

@@ -1,25 +1,7 @@
-
 export default class Worker {
   constructor(intervalId, rate) {
     this.id = intervalId;
     this.rate = rate;
-  }
-
-  set workerId(id) {
-    this.workerId = id;
-  }
-
-  set rate(rate) {
-    this.rate = rate;
-    this.currentStep = 0;
-  }
-
-  get rate() {
-    return this.rate;
-  }
-
-  get workerId() {
-    return this.workerId;
   }
 
   _initialiseWorker() {
@@ -28,13 +10,29 @@ export default class Worker {
       return;
     }
 
+    // init
+    this.currentStep = 0;
+    this.messages = [];
+
+    this.id = setInterval(function() {
+      this.currentStep++;
+
+      // process the queue
+      // send the messages
+
+      postMessage({
+        step: this.currentStep,
+        rate: this.rate,
+        workerID: this.id
+      });
+    }, this.rate);
     //...stuff?
   }
 
-  init(rate, id) {
-    debugger;
-    this.workerId = id;
-    this.rate = rate;
-    this._initialiseWorker();
+  addToQueue(event, data) {
+    this.messages.push({
+      event,
+      data
+    });
   }
 }
